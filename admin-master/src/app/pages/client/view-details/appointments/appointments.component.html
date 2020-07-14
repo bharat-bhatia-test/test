@@ -1,0 +1,106 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card class="inline-form-card">
+      <!-- <nb-card-header>Appointment Details</nb-card-header> -->
+      <nb-card-body>
+        <form [formGroup]="appointmentsForm" (ngSubmit)="onInitList({ offset: 0 })">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="demo-items">
+                <label for="appointment">Appointment Type</label>
+                <nb-radio-group name="appointment" id="appointment" formControlName="appointment">
+                  <nb-radio value="upcoming" (click)="upcomingOrPending(true)" name="appointment">
+                    Upcoming
+                  </nb-radio>
+                  <nb-radio value="past" (click)="upcomingOrPending(false)" name="appointment">
+                    Past
+                  </nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="showUpcoming">
+              <div class="demo-items">
+                <label for="upcomingStatus">Upcoming Status</label>
+                <nb-radio-group id="upcomingStatus" name="upcomingStatus" formControlName="upcomingStatus">
+                  <nb-radio value="confirmed" name="upcomingStatus">
+                    Confirmed
+                  </nb-radio>
+                  <nb-radio value="pending" name="upcomingStatus">
+                    Pending
+                  </nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="!showUpcoming">
+              <div class="demo-items">
+                <label for="pendingStatus">Past Status</label>
+                <nb-radio-group id="pendingStatus" name="pendingStatus" formControlName="pendingStatus">
+                  <nb-radio value="completed" name="pendingStatus">
+                    Completed
+                  </nb-radio>
+                  <nb-radio value="cancelled" name="pendingStatus">
+                    Cancelled
+                  </nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+          </div>
+          <button type="submit" nbButton>
+            Submit
+          </button>
+          <div class="row mb-3">
+            <nb-card-header>Appointments List</nb-card-header>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <table *ngIf="appointmentList.length == 0">
+                <thead>
+                  <th>No Data Found</th>
+                </thead>
+              </table>
+              <ngx-datatable class="bootstrap" *ngIf="appointmentList.length > 0" [externalPaging]="true"
+                [rows]="appointmentList" [columns]="columns" [columnMode]="'force'" [footerHeight]="50"
+                [rowHeight]="'auto'" [count]="totalElements" [offset]="pageNumber" [limit]="size"
+                (page)="onInitList($event)" [rowClass]="getRowClass" [scrollbarH]="true" [selectAllRowsOnPage]="false"
+                [displayCheck]="displayCheck">
+                <ngx-datatable-column name="Date">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.date | date }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Time">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.start_time | date:'shortTime' }} - {{ row.end_time | date:'shortTime' }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Client Name">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row?.client?.first_name }} {{row?.client?.last_name }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Status">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.status }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Booking ID">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.booking_id }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Cancel Booking" *ngIf="showUpcomingTable">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <a class="btn-icons" href="javascript:void(0);" (click)="fireSwal(row)" title="Cancel Booking"><i
+                        class="far fa-trash-alt"></i></a>
+                    <!-- <a class="btn-icons" href="javascript:void(0);" (click)="cancelBooking(row)"
+                      title="Cancel Booking"><i class="far fa-trash-alt"></i></a> -->
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

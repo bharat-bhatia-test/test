@@ -1,0 +1,31 @@
+<div class="admin-login-block">
+  <div class="row" style="justify-content: center; align-items: center;">
+    <img src="favicon.ico" style="width: 48px;">
+    <h2 style="text-align: center;margin: 0 0 0 12px;">Admin Login</h2>
+  </div>
+  <br />
+  <div class="row">
+    <form novalidate="" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <div class="col-md-12">
+          <input type="email" class="form-control" name="email" id="email" placeholder="Email Address"
+            formControlName="email" required>
+          <ngx-control-messages fieldName="Email" [control]="loginForm.controls['email']">
+          </ngx-control-messages>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <input type="password" class="form-control" placeholder="Password" formControlName="password" required>
+          <ngx-control-messages fieldName="Password" [control]="loginForm.controls['password']">
+          </ngx-control-messages>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-info btn-block btn-raised">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

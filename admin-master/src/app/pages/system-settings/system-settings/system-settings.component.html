@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>System Settings</nb-card-header>
+      <nb-card-body>
+        <form [formGroup]="systemForm" (ngSubmit)="onSubmit()">
+          <div class="row mb-3">
+            <!-- <div class="col-md-6">
+              <div class="demo-items ">
+                <label for="sort_by_exp">Sort By Experience</label>
+                <nb-radio-group name="sort_by_exp" id="sort_by_exp" formControlName="sort_by_exp">
+                  <nb-radio value="asc" name="sort_by_exp">
+                    Ascending
+                  </nb-radio>
+                  <nb-radio value="desc" name="sort_by_exp">
+                    Descending
+                  </nb-radio>
+                </nb-radio-group>
+                <app-control-message fieldName="Sort By Experience" [control]="systemForm.controls['sort_by_exp']">
+                </app-control-message>
+              </div>
+            </div> -->
+            <div class="col-md-6">
+              <div class="demo-items">
+                <label for="sort_by_rating">Sort By Reviews</label>
+                <nb-radio-group id="sort_by_rating" name="sort_by_rating" formControlName="sort_by_rating">
+                  <nb-radio value="asc" name="sort_by_rating">
+                    Ascending
+                  </nb-radio>
+                  <nb-radio value="desc" name="sort_by_rating">
+                    Descending
+                  </nb-radio>
+                </nb-radio-group>
+                <app-control-message fieldName="Sort By Reviews" [control]="systemForm.controls['sort_by_rating']">
+                </app-control-message>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="full-name-inputs">
+                <div class="row mb-3">
+                  <label for="caregiver_service_fee">Caregiver Service Fee (%)</label>
+                  <input type="number" step="5" id="caregiver_service_fee" formControlName="caregiver_service_fee"
+                    nbInput fullWidth placeholder="Caregiver Service Fee">
+                </div>
+              </div>
+              <app-control-message fieldName="Caregiver Service Fee"
+                [control]="systemForm.controls['caregiver_service_fee']">
+              </app-control-message>
+            </div>
+            <div class="col-md-6">
+              <div class="full-name-inputs">
+                <div class="row mb-3">
+                  <label for="client_service_fee">Client Service Fee (%)</label>
+                  <input type="number" step="5" id="client_service_fee" formControlName="client_service_fee" nbInput
+                    fullWidth placeholder="Client Service Fee">
+                </div>
+              </div>
+              <app-control-message fieldName="Client Service Fee" [control]="systemForm.controls['client_service_fee']">
+              </app-control-message>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <div class="full-name-inputs">
+                <div class="row mb-3">
+                  <label for="caregiver_referral">Referral</label>
+                  <nb-radio-group id="caregiver_referral" name="caregiver_referral"
+                    formControlName="caregiver_referral">
+                    <nb-radio value="0" name="caregiver_referral">
+                      0 %
+                    </nb-radio>
+                    <nb-radio value="100" name="caregiver_referral">
+                      100 %
+                    </nb-radio>
+                  </nb-radio-group>
+                  <!-- <input type="text" id="caregiver_referral" disabled formControlName="caregiver_referral" nbInput
+                    fullWidth placeholder="Referral"> -->
+                </div>
+              </div>
+              <app-control-message fieldName="Referral" [control]="systemForm.controls['caregiver_referral']">
+              </app-control-message>
+            </div>
+          </div>
+          <button type="submit" nbButton>
+            Submit
+          </button>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

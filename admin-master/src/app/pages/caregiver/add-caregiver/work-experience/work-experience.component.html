@@ -1,0 +1,384 @@
+<nb-card>
+    <nb-card-body>
+        <form [formGroup]="workInfoForm" (ngSubmit)="addWorkInfo()">
+            <div class="row mb-3">
+                <div class="col-md-6" *ngIf="isRnEn">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="licence_expiry_date" class="ml-3 mr-3">License Expiry Date <span>(For RN/EN
+                                    only)</span> </label>
+                            <input nbInput class="ml-3 mr-3" [minDate]="minDate" formControlName="licence_expiry_date"
+                                fullWidth placeholder="Licence Expiry Date" ngbDatepicker #d="ngbDatepicker"
+                                (click)="d.toggle()">
+
+                            <!-- <input nbInput class="ml-3 mr-3" formControlName="licence_expiry_date" fullWidth
+                                placeholder="Licence Expiry Date" [nbDatepicker]="formpicker">
+                            <nb-datepicker #formpicker [min]="minDate"></nb-datepicker> -->
+                            <ngx-control-messages fieldName="Licence Expiry Date" class="ml-3"
+                                [control]="workInfoForm.controls['licence_expiry_date']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="show_employer_option" class="ml-3 mr-3">Show employer name on the
+                                platform?</label>
+                            <nb-select formControlName="show_employer_option"
+                                selected="{{workInfoForm.value.show_employer_option}}" class="ml-3 mr-3" fullWidth
+                                placeholder="Show employer name">
+                                <nb-option value="1">Yes</nb-option>
+                                <nb-option value="0">No</nb-option>
+                                <!-- <nb-option value="2">No</nb-option> -->
+                            </nb-select>
+                            <ngx-control-messages fieldName="Show employer"
+                                [control]="workInfoForm.controls['show_employer_option']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <hr />
+                    <h4>Current Employer</h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="current_employer_hospital_name" class="ml-3 mr-3">Name of
+                                Hospital/Company</label>
+                            <input type="text" id="current_employer_hospital_name" class="ml-3 mr-3"
+                                formControlName="current_employer_hospital_name" nbInput fullWidth
+                                placeholder="Name of Hospital/Company">
+                            <ngx-control-messages fieldName="Name of Hospital/Company"
+                                [control]="workInfoForm.controls['current_employer_hospital_name']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="demo-items">
+                        <label for="current_employer_work_type">Work Type</label>
+                        <nb-radio-group name="current_employer_work_type" id="current_employer_work_type"
+                            formControlName="current_employer_work_type">
+                            <nb-radio value="1" name="current_employer_work_type">
+                                Full Time
+                            </nb-radio>
+                            <nb-radio value="2" name="current_employer_work_type">
+                                Part Time
+                            </nb-radio>
+                        </nb-radio-group>
+                        <ngx-control-messages fieldName="current_employer_work_type"
+                            [control]="workInfoForm.controls['current_employer_work_type']">
+                        </ngx-control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>From</label>
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+
+                            <div class="col-md-6">
+                                <nb-select selected="{{workInfoForm.value.current_employer_month}}"
+                                    formControlName="current_employer_month" fullWidth placeholder="Month"
+                                    (selectedChange)="calculateExperience($event, 'month')">
+                                    <nb-option value="{{ month.id }}" *ngFor="let month of monthsArray">{{month.name}}
+                                    </nb-option>
+                                </nb-select>
+                                <ngx-control-messages fieldName="Month"
+                                    [control]="workInfoForm.controls['current_employer_month']">
+                                </ngx-control-messages>
+                            </div>
+                            <div class="col-md-6">
+                                <nb-select selected="{{workInfoForm.value.current_employer_year}}"
+                                    formControlName="current_employer_year" fullWidth placeholder="Year"
+                                    (selectedChange)="calculateExperience($event, 'year')">
+                                    <nb-option value="{{ year }}" *ngFor="let year of educationYears">{{year}}
+                                    </nb-option>
+                                </nb-select>
+                                <ngx-control-messages fieldName="Year"
+                                    [control]="workInfoForm.controls['current_employer_year']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label>Years of Experience</label><br />
+                                <p>{{ yearsOfExperience  }} Years , {{ monthsOfExperience }} Months</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <hr />
+                    <h4>Previous Employer(s)</h4>
+                </div>
+            </div>
+            <div formArrayName="previous_employer_details"
+                *ngFor="let item of workInfoForm.get('previous_employer_details')['controls'];let i = index">
+                <a *ngIf="showRemoveEmployer" href="javascript:void(0)" (click)="removePreviousEmployer(i)"
+                    class="pull-right remove-btn"><i class="far fa-trash-alt"></i></a>
+                <ng-container [formGroupName]="i">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="full-name-inputs">
+                                <div class="mb-3">
+                                    <label for="company_name">Name of
+                                        Hospital/Company</label>
+                                    <input type="text" id="company_name" formControlName="company_name" nbInput
+                                        fullWidth placeholder="Name of Hospital/Company">
+                                    <ngx-control-messages fieldName="Name of Hospital/Company"
+                                        [control]="workInfoForm.get('previous_employer_details')['controls'][i].controls['company_name']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="demo-items">
+                                <label for="work_type">Work Type</label>
+                                <nb-radio-group name="work_type_{{i}}" id="work_type" formControlName="work_type">
+                                    <nb-radio value="1" name="work_type">
+                                        Full Time
+                                    </nb-radio>
+                                    <nb-radio value="2" name="work_type">
+                                        Part Time
+                                    </nb-radio>
+                                </nb-radio-group>
+                                <ngx-control-messages fieldName="work_type"
+                                    [control]="workInfoForm.get('previous_employer_details')['controls'][i].controls['work_type']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>From</label>
+                            <div class="full-name-inputs">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <select class="form-control" nbInput formControlName="from_month" fullWidth
+                                            placeholder="Select From Month"
+                                            (change)="checkDateValidation($event, 'from_month', i)">
+                                            <option value="">Select From Month</option>
+                                            <option value="{{ month.id }}" *ngFor="let month of monthsArray">
+                                                {{month.name}}
+                                            </option>
+                                        </select>
+                                        <!-- <nb-select
+                                            selected="{{workInfoForm.value.previous_employer_details[i].from_month}}"
+                                            formControlName="from_month" fullWidth placeholder="Select From Month"
+                                            (selectedChange)="checkDateValidation($event, 'from_month', i)">
+                                            <nb-option value="{{ month.id }}" *ngFor="let month of monthsArray">
+                                                {{month.name}}
+                                            </nb-option>
+                                        </nb-select> -->
+                                        <ngx-control-messages fieldName="Month"
+                                            [control]="workInfoForm.get('previous_employer_details')['controls'][i].controls['from_month']">
+                                        </ngx-control-messages>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control" nbInput formControlName="from_year" fullWidth
+                                            placeholder="Select From Year"
+                                            (change)="checkDateValidation($event, 'from_year', i)">
+                                            <option value="">Select From Year</option>
+                                            <option value="{{ year }}" *ngFor="let year of educationYears">
+                                                {{year}}
+                                            </option>
+                                        </select>
+                                        <!-- <nb-select
+                                            selected="{{workInfoForm.value.previous_employer_details[i].from_year}}"
+                                            formControlName="from_year" fullWidth placeholder="Select From Year"
+                                            (selectedChange)="checkDateValidation($event, 'from_year', i)">
+                                            <nb-option value="{{ year }}" *ngFor="let year of years">{{year}}
+                                            </nb-option>
+                                        </nb-select> -->
+                                        <ngx-control-messages fieldName="Year"
+                                            [control]="workInfoForm.get('previous_employer_details')['controls'][i].controls['from_year']">
+                                        </ngx-control-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>To</label>
+                            <div class="full-name-inputs">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <select class="form-control" nbInput formControlName="to_month" fullWidth
+                                            placeholder="Select To Month"
+                                            (change)="checkDateValidation($event, 'to_month', i)">
+                                            <option value="">Select To Month</option>
+                                            <option value="{{ month.id }}" *ngFor="let month of monthsArray">
+                                                {{month.name}}
+                                            </option>
+                                        </select>
+                                        <!-- <nb-select
+                                            selected="{{workInfoForm.value.previous_employer_details[i].to_month}}"
+                                            formControlName="to_month" fullWidth placeholder="Select To Month"
+                                            (selectedChange)="checkDateValidation($event, 'to_month', i)">
+                                            <nb-option value="{{ month.id }}" *ngFor="let month of monthsArray">
+                                                {{month.name}}
+                                            </nb-option>
+                                        </nb-select> -->
+                                        <ngx-control-messages fieldName="Month"
+                                            [control]="workInfoForm.get('previous_employer_details')['controls'][i].controls['to_month']">
+                                        </ngx-control-messages>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control" nbInput formControlName="to_year" fullWidth
+                                            placeholder="Select To Year"
+                                            (change)="checkDateValidation($event, 'to_year', i)">
+                                            <option value="">Select To Year</option>
+                                            <option value="{{ year }}" *ngFor="let year of educationYears">
+                                                {{year}}
+                                            </option>
+                                        </select>
+                                        <!-- <nb-select
+                                            selected="{{workInfoForm.value.previous_employer_details[i].to_year}}"
+                                            formControlName="to_year" fullWidth placeholder="Select From Year"
+                                            (selectedChange)="checkDateValidation($event, 'to_year', i)">
+                                            <nb-option value="{{ year }}" *ngFor="let year of years">{{year}}
+                                            </nb-option>
+                                        </nb-select> -->
+                                        <ngx-control-messages fieldName="Year"
+                                            [control]="workInfoForm.get('previous_employer_details')['controls'][i].controls['to_year']">
+                                        </ngx-control-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label>Years of Experience</label>
+                            <p>
+                                {{ workInfoForm.get('previous_employer_details')['controls'][i].controls['years_experience'].value > 0 ? workInfoForm.get('previous_employer_details')['controls'][i].controls['years_experience'].value: ('')}}
+                                {{ workInfoForm.get('previous_employer_details')['controls'][i].controls['years_experience'].value > 0 ? 'Year(s)' : ('' ) }}
+                                {{ workInfoForm.get('previous_employer_details')['controls'][i].controls['months_experience'].value > 0 ? workInfoForm.get('previous_employer_details')['controls'][i].controls['months_experience'].value: ('')}}
+                                {{ workInfoForm.get('previous_employer_details')['controls'][i].controls['months_experience'].value > 0 ? 'Month(s)' : ('')}}
+                            </p>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="add-btn">
+                <a href="javascript:void(0);" *ngIf="!profileMode && showAnotherPreviousEmployer"
+                    (click)="addPreviousEmployer()" class="btn btn-border">Add another Previous employer</a>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <hr />
+                    <h4>Education</h4>
+                </div>
+            </div>
+            <div formArrayName="education_details"
+                *ngFor="let education of workInfoForm.get('education_details')['controls'];let j = index">
+                <a *ngIf="showRemoveEducation" href="javascript:void(0)" (click)="removeEducation(j)"
+                    class="pull-right remove-btn"><i class="far fa-trash-alt"></i></a>
+                <div [formGroupName]="j">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="full-name-inputs">
+                                <div class="row mb-3">
+                                    <label for="institute_name" class="ml-3 mr-3">Name of
+                                        Institution</label>
+                                    <input type="text" id="institute_name" class="ml-3 mr-3"
+                                        formControlName="institute_name" nbInput fullWidth
+                                        placeholder="Enter name of Institution">
+                                    <ngx-control-messages fieldName="Name of Institution"
+                                        [control]="workInfoForm.get('education_details')['controls'][j].controls['institute_name']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="full-name-inputs">
+                                <div class="row mb-3">
+                                    <label for="degree" class="ml-3 mr-3">Degree/Programme</label>
+                                    <input type="text" id="degree" class="ml-3 mr-3" formControlName="degree" nbInput
+                                        fullWidth placeholder="Enter Degree/Programme">
+                                    <ngx-control-messages fieldName="Degree/Programme"
+                                        [control]="workInfoForm.get('education_details')['controls'][j].controls['degree']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="start_year_{{j}}">Start Year</label>
+                                <select id="start_year_{{j}}" class="form-control" nbInput formControlName="start_year"
+                                    fullWidth placeholder="Start Year"
+                                    (change)="checkEducationDateValidation($event, j)">
+                                    <option value="">Start Year</option>
+                                    <option value="{{ year }}" *ngFor="let year of educationYears">
+                                        {{year}}
+                                    </option>
+                                </select>
+
+                                <!-- <label>Start Year</label>
+                                <nb-select id="start_year_{{j}}" (change)="checkEducationDateValidation($event, j)"
+                                    selected="{{workInfoForm.value.education_details[j].start_year}}"
+                                    formControlName="start_year" fullWidth placeholder="Start Year">
+                                    <nb-option value="{{ year }}" *ngFor="let year of educationYears">
+                                        {{year}}
+                                    </nb-option>
+                                </nb-select> -->
+                                <ngx-control-messages fieldName="Start Year"
+                                    [control]="workInfoForm.get('education_details')['controls'][j].controls['start_year']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="end_year_{{j}}">End Year</label>
+                                <select id="end_year_{{j}}" class="form-control" nbInput formControlName="end_year"
+                                    fullWidth placeholder="End Year" (change)="checkEducationDateValidation($event, j)">
+                                    <option value="">End Year</option>
+                                    <option value="{{ year }}" *ngFor="let year of educationYears">
+                                        {{year}}
+                                    </option>
+                                </select>
+                                <!-- <nb-select id="end_year_{{j}}"
+                                    selected="{{workInfoForm.value.education_details[j].end_year}}"
+                                    formControlName="end_year" fullWidth placeholder="End Year"
+                                    (change)="checkEducationDateValidation($event, j)">
+                                    <nb-option value="{{ year }}" *ngFor="let year of educationYears">
+                                        {{year}}
+                                    </nb-option>
+                                </nb-select> -->
+                                <ngx-control-messages fieldName="End Year"
+                                    [control]="workInfoForm.get('education_details')['controls'][j].controls['end_year']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-btn">
+                <a href="javascript:void(0);" *ngIf="showAddMoreEducation" (click)="addMoreEducation()"
+                    class="btn btn-border">Add another Qualification</a>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <button type="submit" nbButton>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+</nb-card>

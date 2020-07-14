@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card class="inline-form-card">
+      <!-- <nb-card-header>Care Receiver Background</nb-card-header> -->
+      <nb-card-body>
+        <div class="row mb-3">
+          <nb-card-header>Illness List</nb-card-header>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div *ngFor="let illness of illnessList">
+              {{illness.english_title}}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div *ngFor="let specific of specificList">
+              {{specific}}
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3" *ngIf="otherHistory !== ''">
+          <nb-card-header>Service User Other Medical History</nb-card-header>
+        </div>
+        <div class="row mb-3" *ngIf="otherHistory !== ''">
+          <div class="col-md-12">
+            <div>
+              {{otherHistory}}
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

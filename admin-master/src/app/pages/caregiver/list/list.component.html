@@ -1,0 +1,187 @@
+<div class="content">
+  <nb-card class="list-card">
+    <nb-card-header>
+      <div class="row mb-3">
+        <div class="col-md-6 pull-left">
+          <h4> Caregiver List</h4>
+        </div>
+        <div class="col-md-6 pull-right">
+          <div class="top-right-btn">
+            <button [disabled]="selected.length === 0" (click)="openPopup(dialog)"
+              class="btn btn-outline-primary pull-right">Change Status</button>
+            <button [disabled]="selected.length === 0" (click)="fireSwal()"
+              class="btn btn-outline-primary pull-right">Delete</button>
+            <button class="btn btn-outline-primary pull-right"
+              [routerLink]="['/pages/caregiver/new-caregiver']">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="caregiverSearchForm" (ngSubmit)="caregiverSearch()" #formDirective="ngForm">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <select formControlName="status" class="form-control">
+                    <option value="" selected>Select Status</option>
+                    <option value="1">Pending caregivers</option>
+                    <option value="2">Approved caregivers</option>
+                    <option value="3">Unapproved caregivers</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <select formControlName="caregiver_type" class="form-control" (change)="showHideOneMonth($event)">
+                    <option value="" selected>Select Caregiver Type</option>
+                    <option value="{{type.id}}" *ngFor="let type of caregiverType">{{type.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input type="email" name="email" class="form-control" placeholder="Caregiver Email"
+                    formControlName="email">
+                  <ngx-control-messages fieldName="Caregiver Email" [control]="caregiverSearchForm.controls['email']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input type="text" name="mobile" class="form-control" placeholder="Caregiver Mobile"
+                    formControlName="mobile_number">
+                  <ngx-control-messages fieldName="Caregiver Mobile"
+                    [control]="caregiverSearchForm.controls['mobile_number']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox formControlName="is_refferal_fee_due">Referral Fee Due</nb-checkbox>
+                  <ngx-control-messages fieldName="Referral Fee Due"
+                    [control]="caregiverSearchForm.controls['is_refferal_fee_due']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+              <div class="col-md-3" *ngIf="showOneMonthLeft">
+                <div class="form-group">
+                  <nb-checkbox formControlName="expired_within_month">Expired within 1 month</nb-checkbox>
+                  <ngx-control-messages fieldName="Expired within 1 month"
+                    [control]="caregiverSearchForm.controls['expired_within_month']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary mr-2">Filter</button>
+                <button type="button" class="btn btn-outline-primary"
+                  (click)="clearFilter(formDirective)">Clear</button>
+
+              </div>
+              <div class="col-md-8" style="text-align: right;">
+                <a href="javascript:void(0)" (click)="downLoadCSV()" title="Export To CSV" class="btn-icons"><i
+                    class="fas fa-download"></i></a></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="col-md-12">
+
+          <table *ngIf="caregiverList.length == 0">
+            <thead>
+              <th>No Data Found</th>
+            </thead>
+          </table>
+          <ngx-datatable class="bootstrap" *ngIf="caregiverList.length > 0" [externalPaging]="true"
+            [rows]="caregiverList" [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'"
+            [count]="totalElements" [offset]="pageNumber" [limit]="size" (page)="setPage($event)"
+            [rowClass]="getRowClass" [scrollbarH]="true" [selected]="selected" [selectionType]="SelectionType.checkbox"
+            [selectAllRowsOnPage]="false" [displayCheck]="displayCheck" (select)="onSelect($event)"
+            (sort)="onSort($event)">
+            <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+              [resizeable]="false" [headerCheckboxable]="true" [checkboxable]="true"> </ngx-datatable-column>
+            <ngx-datatable-column name="Reg. No." prop="registration_no" [width]="70">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <a href="javascript:void(0)"
+                  routerLink="/pages/caregiver/onboard/personal-info/{{row.registration_no}}">
+                  {{ row.registration_no }}</a>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Nickname" [sortable]=false [width]="150">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.nick_name }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Status" [sortable]=false [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ status[row.status - 1] }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Type" [sortable]=false [width]="150">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ caregiver_type[row.caregiver_type - 1] }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Mobile" [sortable]=false [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.user?.mobile_number }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Email" [sortable]=false [width]="250">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.user.email }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Registration" prop="created_at" [width]="150">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.created_at | date }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Referral Due" prop="due_amount" [width]="150">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row?.user?.due_amount !== null ?row?.user?.due_amount:0 }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Actions" [width]="80">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <a href="javascript:void(0)" routerLink="/pages/caregiver/onboard/personal-info/{{row.registration_no}}"
+                  title="View Details" class="btn-icons"><i class="far fa-eye"></i></a>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>Change Status</nb-card-header>
+    <nb-card-body>
+      <form [formGroup]="changeStatusForm" (ngSubmit)="changeStatus()">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <select formControlName="changeStatus" class="form-control">
+              <option value="" disabled>Change Status</option>
+              <option value="1" selected>Pending</option>
+              <option value="2">Approved</option>
+              <option value="3">Unapproved</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <button nbButton #closeButton (click)="ref.close()" id="closeButton">Close</button>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" nbButton>Submit</button>
+          </div>
+        </div>
+      </form>
+    </nb-card-body>
+  </nb-card>
+</ng-template>

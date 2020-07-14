@@ -1,0 +1,155 @@
+<div class="row">
+    <div class="col-md-12">
+        <nb-card class="inline-form-card">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-md-8">
+                        Outstanding Matches Booking Details
+                    </div>
+                    <div class="col-md-4 pull-right">
+                        <button type="button" class="btn btn-primary mr-3" *ngIf="showConfirm && showEditDateOption"
+                            (click)="openPopup(dialog)">Confirm</button>
+                        <button type="button" class="btn btn-primary mr-3" *ngIf="showDelete && showEditDateOption "
+                            (click)="fireSwal()">Delete</button>
+                        <button type="button" class="btn btn-primary mr-3" *ngIf="showRefund"
+                            (click)="refundAppointment()">Refund</button>
+                    </div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="row mb-3">
+                    <label class="col-md-12">Date Of Appointment</label>
+                    <div class="col-md-6">
+                        Start Time : {{bookingDetails?.start_time | date :'medium'}}
+                    </div>
+                    <div class="col-md-6">
+                        Account User : <a href="javascript:void(0)" target="_blank"
+                            routerLink="/pages/client/client-view-details/{{bookingDetails?.client?.user_id}}/account-user-personal-info">{{bookingDetails?.client?.first_name }}
+                            {{bookingDetails?.client?.last_name }}</a>
+                    </div>
+                </div>
+                <div class="row mb-3" *ngIf="bookingDetails?.payment_date_client !== null">
+                    <div class="col-md-12">
+                        Client Payment Confirmation date : {{bookingDetails?.payment_date_client | date :'medium'}}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        End Time : {{bookingDetails?.end_time | date:'medium'}}
+                    </div>
+                    <div class="col-md-6">
+                        Care Receiver : <a href="javascript:void(0)" target="_blank"
+                            routerLink="/pages/client/client-view-details/{{bookingDetails?.client?.user_id}}/care-receiver-personal-info">{{bookingDetails?.client?.service_user_firstname }}
+                            {{bookingDetails?.client?.service_user_lastname }}</a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        Duration : {{bookingDetails?.duration}} Hour(s)
+                    </div>
+                    <div class="col-md-6">
+                        Services required :
+                        <ul *ngIf="bookingDetails?.services?.length > 0">
+                            <li *ngFor="let service of bookingDetails.services">
+                                <span>{{service.english_title}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Caregiver(s):
+                        <ul *ngIf="bookingDetails?.caregiverDetail?.length > 0">
+                            <li *ngFor="let caregiver of bookingDetails.caregiverDetail">
+                                <a href="javascipt:void(0);" target="_blank"
+                                    routerLink="/pages/caregiver/onboard/personal-info/{{caregiver?.caregiver?.registration_no}}">{{caregiver?.caregiver?.english_name}}</a>
+                                - {{caregiver_status[caregiver?.status - 1]}}
+                            </li>
+                        </ul>
+                    </div>
+                    <ng-container *ngIf="showConfirm">
+                        <div class="col-md-12 mb-3">
+                            Accepted Caregiver : <a href="javascript:void(0);" target="_blank"
+                                routerLink="/pages/caregiver/onboard/personal-info/{{bookingDetails?.acceptedCaregvier?.caregiver?.registration_no}}">{{bookingDetails?.acceptedCaregvier?.caregiver.english_name}}</a>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            Accepted Caregiver Charge Per Hour :
+                            ${{bookingDetails?.acceptedCaregvier?.caregiver_charges_price}}
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!showConfirm">
+                        <div class="col-md-12 mb-3">
+                            Accepted Caregiver : --NA--
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            Accepted Caregiver Charge Per Hour : --NA--
+                        </div>
+                    </ng-container>
+                    <div class="col-md-12 mb-3" *ngIf="showConfirm">
+                        Caregiver Service fee : $ {{ bookingDetails?.acceptedCaregvier?.caregiver_service_fee }}
+                    </div>
+                    <div class="col-md-12 mb-3" *ngIf="!showConfirm">
+                        Caregiver Service fee : --NA--
+                    </div>
+                    <div class="col-md-12 mb-3" *ngIf="showConfirm">
+                        Client Service fee : $ {{ bookingDetails?.acceptedCaregvier?.client_service_fee }}
+                    </div>
+                    <div class="col-md-12 mb-3" *ngIf="!showConfirm">
+                        Client Service fee : --NA--
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        Transport Subsidy :
+                        $ {{bookingDetails?.transport_subsidy !== null ? bookingDetails?.transport_subsidy : 0 }}
+                    </div>
+                    <div class="col-md-12 mb-3" *ngIf="showConfirm">
+                        Total : $
+                        {{ bookingDetails?.acceptedCaregvier?.total_amount }}
+                    </div>
+                    <div class="col-md-12 mb-3" *ngIf="!showConfirm">
+                        Total : --NA--
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Confirm Booking</nb-card-header>
+        <nb-card-body>
+            <form [formGroup]="confirmBookingForm" (ngSubmit)="confirmAppointment()">
+                <div class="row mb-3">
+                    <div class="col-md-12 calendar-form">
+                        <label>Select Client Payment Date</label>
+                        <div class="calendar-input">
+                            <input class="form-control" placeholder="Client Payment Date"
+                                formControlName="payment_date_client" ngbDatepicker #d="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <ngx-control-messages fieldName="Client Payment Date"
+                                    [control]="confirmBookingForm.controls['payment_date_client']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                        <ngb-timepicker name="dp" formControlName="payment_date_time" [spinners]="showSpinners"
+                            [seconds]="false"></ngb-timepicker>
+                        <ngx-control-messages fieldName="Client Payment Time"
+                            [control]="confirmBookingForm.controls['payment_date_time']">
+                        </ngx-control-messages>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <button nbButton #closeButton (click)="ref.close()" id="closeButton">Close</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" nbButton>Submit</button>
+                    </div>
+                </div>
+            </form>
+        </nb-card-body>
+    </nb-card>
+</ng-template>

@@ -1,0 +1,112 @@
+<nb-card>
+    <nb-card-body>
+        <form [formGroup]="availabiltyForm" (ngSubmit)="addAvailability()">
+            <div class="single-block time-block" formArrayName="availability_details"
+                *ngFor="let item of availabiltyForm.get('availability_details')['controls'];let i = index">
+                <ng-container [formGroupName]="i">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row mb-3">
+
+                                <div class="col-md-3">
+                                    <label>Every</label>
+                                    <nb-select formControlName="from_day" fullWidth placeholder="Day From">
+                                        <nb-option value="{{ day.id }}" *ngFor="let day of daysArray">{{day.name}}
+                                        </nb-option>
+                                    </nb-select>
+                                    <ngx-control-messages fieldName="Day From"
+                                        [control]="availabiltyForm.get('availability_details')['controls'][i].controls['from_day']">
+                                    </ngx-control-messages>
+                                </div>
+                                <!-- <div class="col-md-3">
+                                    <label>Every</label>
+                                    <nb-select formControlName="to_day" fullWidth placeholder="Day To">
+                                        <nb-option value="{{ day.id }}" *ngFor="let day of daysArray">{{day.name}}
+                                        </nb-option>
+                                    </nb-select>
+                                    <ngx-control-messages fieldName="Day To"
+                                        [control]="availabiltyForm.get('availability_details')['controls'][i].controls['to_day']">
+                                    </ngx-control-messages>
+                                </div> -->
+                                <div class="col-md-3">
+                                    <label>From Time</label>
+                                    <div class="time-blocks">
+                                        <input type="number" id="from_time" formControlName="from_time" nbInput
+                                            placeholder="5">
+                                        <nb-select formControlName="from_meridian">
+                                            <nb-option value="AM">AM</nb-option>
+                                            <nb-option value="PM">PM</nb-option>
+                                        </nb-select>
+                                    </div>
+                                    <ngx-control-messages fieldName="Time From"
+                                        [control]="availabiltyForm.get('availability_details')['controls'][i].controls['from_time']">
+                                    </ngx-control-messages>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Time To</label>
+                                    <div class="time-blocks">
+                                        <input type="number" id="to_time" formControlName="to_time" nbInput
+                                            placeholder="5">
+                                        <nb-select formControlName="to_meridian">
+                                            <nb-option value="AM">AM</nb-option>
+                                            <nb-option value="PM">PM</nb-option>
+                                        </nb-select>
+                                    </div>
+                                    <ngx-control-messages fieldName="Time To"
+                                        [control]="availabiltyForm.get('availability_details')['controls'][i].controls['to_time']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="javascript:void(0)"
+                            *ngIf="availabiltyForm.get('availability_details')['controls'].length > 1"
+                            (click)="removeAvailability(i)" class="remove-btn remove-availability"><i
+                                class="far fa-trash-alt"></i></a>
+                    </div>
+
+                </ng-container>
+            </div>
+            <div class="add-btn">
+                <a href="javascript:void(0);" (click)="addAvailabilityOptions()" class="btn btn-border">Add another
+                    Availability</a>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Locations<small>(Places that are willing to go. Please select 5 max.)</small></h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <ng-container *ngFor="let location of availabiltyForm.get('locations')['controls'];let i = index"
+                        [formGroup]="location">
+                        <label class="label-title">{{ location.get('name').value  }} </label>
+                        <ul>
+                            <li *ngFor="let subLocation of availabiltyForm.get('locations')['controls'][i].controls.subGroup.controls;let j = index"
+                                [formGroup]="subLocation">
+                                <div class="custom-checkbox">
+                                    <input id="subLocation_{{ i }}_{{ j }}" type="checkbox"
+                                        [formControl]="subLocation.get('selected')" class="form-check-input" />
+                                    <label for="subLocation_{{ i }}_{{ j }}">
+                                        {{ subLocation.get('name').value }}
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" nbButton>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+</nb-card>

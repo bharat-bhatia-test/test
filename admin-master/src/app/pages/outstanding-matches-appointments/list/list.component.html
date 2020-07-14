@@ -1,0 +1,114 @@
+<div class="content">
+  <nb-card class="list-card">
+    <nb-card-header>
+      <div class="row mb-3">
+        <div class="col-md-6 pull-left">
+          <h4>Outstanding Matches</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="outStandingMatchSearchForm" (ngSubmit)="outStandingMatchSearch()">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input type="email" name="email" class="form-control" placeholder="Email" formControlName="email">
+                  <ngx-control-messages fieldName="Email" [control]="outStandingMatchSearchForm.controls['email']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input type="text" name="mobile" class="form-control" placeholder="Mobile"
+                    formControlName="mobile_number">
+                  <ngx-control-messages fieldName="Mobile"
+                    [control]="outStandingMatchSearchForm.controls['mobile_number']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input nbInput placeholder="From date" formControlName="start_time" class="form-control"
+                    [nbDatepicker]="formpicker">
+                  <nb-datepicker #formpicker></nb-datepicker>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <input nbInput placeholder="To date" formControlName="end_time" class="form-control"
+                    [nbDatepicker]="formpicker1">
+                  <nb-datepicker #formpicker1></nb-datepicker>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <select formControlName="is_accepted_by_caregiver" class="form-control">
+                    <option value="">All</option>
+                    <option value="one">At least 1 caregiver accepted</option>
+                    <option value="none">Not accepted by any caregiver</option>
+                  </select>
+                  <ngx-control-messages fieldName="At least 1 caregiver accepted"
+                    [control]="outStandingMatchSearchForm.controls['is_accepted_by_caregiver']">
+                  </ngx-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary mr-2">Filter</button>
+                <button type="button" class="btn btn-outline-primary" (click)="clearFilter()">Clear</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="col-md-12">
+          <table *ngIf="appointmentsList.length == 0">
+            <thead>
+              <th>No Data Found</th>
+            </thead>
+          </table>
+          <ngx-datatable class="bootstrap" *ngIf="appointmentsList.length > 0" [rows]="appointmentsList"
+            [externalPaging]="true" [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'"
+            [count]="totalElements" [offset]="pageNumber" [limit]="size" (page)="setPage($event)"
+            [rowClass]="getRowClass" [scrollbarH]="true">
+            <ngx-datatable-column name="Appointment date-time" [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row.date | date}} ({{ row.start_time | date:'shortTime' }})
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Client Name" [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.client?.first_name }} {{ row.client?.last_name }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Caregiver Status" [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{row.statusToShow}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Location" [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.locationName }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Actions" [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <a class="btn-icons" href="javascript:void(0);"
+                  routerLink="/pages/outstanding-matches/details/{{row.booking_id}}">
+                  <i class="far fa-eye"></i>
+                </a>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>

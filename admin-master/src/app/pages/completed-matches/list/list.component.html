@@ -1,0 +1,132 @@
+<div class="content">
+    <nb-card class="list-card">
+        <nb-card-header>
+            <div class="row mb-3">
+                <div class="col-md-6 pull-left">
+                    <h4>Completed Matches</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form [formGroup]="completedMatchSearchForm" (ngSubmit)="completedMatchSearch()">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="email" name="email" class="form-control" placeholder="Email"
+                                        formControlName="email">
+                                    <ngx-control-messages fieldName="Email"
+                                        [control]="completedMatchSearchForm.controls['email']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" name="mobile" class="form-control" placeholder="Mobile"
+                                        formControlName="mobile_number">
+                                    <ngx-control-messages fieldName="Mobile"
+                                        [control]="completedMatchSearchForm.controls['mobile_number']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input nbInput placeholder="From date" formControlName="start_time"
+                                        class="form-control" [nbDatepicker]="formpicker">
+                                    <nb-datepicker #formpicker></nb-datepicker>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input nbInput placeholder="To date" formControlName="end_time" class="form-control"
+                                        [nbDatepicker]="formpicker1">
+                                    <nb-datepicker #formpicker1></nb-datepicker>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select formControlName="payment_status_caregiver" class="form-control">
+                                        <option value="" disabled>Select Payment Status</option>
+                                        <option value="2">Paid</option>
+                                        <option value="1">Unpaid</option>
+                                    </select>
+                                    <ngx-control-messages fieldName="Payment Status"
+                                        [control]="completedMatchSearchForm.controls['payment_status_caregiver']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary mr-2">Filter</button>
+                                <button type="button" class="btn btn-outline-primary"
+                                    (click)="clearFilter()">Clear</button>
+                            </div>
+                            <div class="col-md-8" style="text-align: right;">
+                                <a href="javascript:void(0)" (click)="downLoadCSV()" title="Export To CSV"
+                                    class="btn-icons"><i class="fas fa-download"></i></a>
+                                <!-- <button (click)="downLoadCSV()"> Download CSV </button> -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-md-12">
+                    <table *ngIf="appointmentsList.length == 0">
+                        <thead>
+                            <th>No Data Found</th>
+                        </thead>
+                    </table>
+                    <ngx-datatable class="bootstrap" *ngIf="appointmentsList.length > 0" [rows]="appointmentsList"
+                        [externalPaging]="true" [columns]="columns" [columnMode]="'force'" [footerHeight]="50"
+                        [rowHeight]="'auto'" [count]="totalElements" [offset]="pageNumber" [limit]="size"
+                        (page)="setPage($event)" [rowClass]="getRowClass" [scrollbarH]="true">
+                        <ngx-datatable-column name="Appointment date-time" [width]="150">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.date | date}} ({{ row.start_time | date:'shortTime' }})
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Client Name" [width]="100">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.client?.first_name }} {{ row.client?.last_name }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Caregiver Status" [width]="100">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.statusToShow}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Paid" [width]="100">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <ng-container *ngIf="row.payment_status_caregiver === '1'">
+                                    N
+                                </ng-container>
+                                <ng-container *ngIf="row.payment_status_caregiver === '2'">
+                                    Y
+                                </ng-container>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Location" [width]="100">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row.locationName }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Actions" [width]="100">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a href="javascript:void(0);"
+                                    routerLink="/pages/completed-matches/details/{{row.booking_id}}" class="btn-icons">
+                                    <i class="far fa-eye"></i>
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>

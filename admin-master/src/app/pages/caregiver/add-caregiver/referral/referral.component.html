@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card class="inline-form-card">
+      <nb-card-body>
+        <div class="row mb-3">
+          <nb-card-header>Referral Bonus</nb-card-header>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3">
+            Due: {{referralData?.due}}
+          </div>
+          <div class="col-md-3">
+            Earned: {{referralData?.earned}}
+          </div>
+          <div class="col-md-3">
+            Paid: {{referralData?.paid}}
+          </div>
+          <div class="col-md-3">
+            Caregivers Referred: {{referralData?.caregivers_reffered}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <br>
+          <nb-card-header>Referral Amount Paid Details</nb-card-header>
+          <br>
+        </div>
+        <form [formGroup]="referralForm" (ngSubmit)="onSubmit()">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="full-name-inputs">
+                <label for="amount">Amount</label>
+                <input type="text" id="amount" formControlName="amount" nbInput placeholder="Enter Amount">
+              </div>
+              <app-control-message fieldName="Amount" [control]="referralForm.controls['amount']">
+              </app-control-message>
+            </div>
+            <div class="col-md-6">
+              <div class="full-name-inputs">
+                <label for="date">Paid at</label>
+                <input [nbDatepicker]="formpicker" id="date" formControlName="date" nbInput placeholder="Enter Date">
+                <nb-datepicker #formpicker [max]="max"></nb-datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <button type="submit" nbButton>
+                Submit
+              </button>
+            </div>
+          </div>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

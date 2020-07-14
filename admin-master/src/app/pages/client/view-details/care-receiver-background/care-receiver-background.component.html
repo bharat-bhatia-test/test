@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card class="inline-form-card">
+      <!-- <nb-card-header>Care Receiver Background</nb-card-header> -->
+      <nb-card-body>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            Languages Spoken:
+            <div *ngFor="let lang of languageToShow">
+              {{lang}}
+            </div>
+          </div>
+          <div class="col-md-6">
+            Weight(in kg): {{data?.weight}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            Height(in cm): {{data?.height}}
+          </div>
+          <div class="col-md-6">
+            Diet: {{dietData[data?.diet - 1]}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            Physical Ability: {{data?.physicalAbility}}
+          </div>
+          <div class="col-md-6">
+            Eye Sight: {{eyeSight[data?.eyeSight - 1]}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            Hearing: {{hearing[data?.hearing - 1]}}
+          </div>
+          <div class="col-md-6">
+            Lifting: {{lift[data?.lifting - 1]}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <nb-card-header>Lower Limb Mobility (0 no strength and 5 with strength)</nb-card-header>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            Left Leg: {{data?.leftLeg}}
+          </div>
+          <div class="col-md-6">
+            Right Leg: {{data?.rightLeg}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <nb-card-header>Hand Mobility (0 no strength and 5 with strength)</nb-card-header>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            Left Hand: {{data?.leftHand}}
+          </div>
+          <div class="col-md-6">
+            Right Hand: {{data?.rightHand}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <nb-card-header>Assisting Devices</nb-card-header>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            Assisting Devices: {{assistingDevices[data?.assistingDevices - 1]}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <nb-card-header>Others</nb-card-header>
+          <div class="col-md-12" *ngFor="let other of otherDevicesToShow">
+            {{other}}
+          </div>
+        </div>
+        <div class="row" *ngIf="showSpecificDurg">
+          <div class="col-md-12">
+            {{specificDrug}}
+          </div>
+        </div>
+        <div class="row mb-3" *ngIf="selfcareAbilities.length > 0">
+          <nb-card-header>Self Care Abilities</nb-card-header>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12" *ngFor="let selfCare of selfcareAbilities">
+            {{selfCare.name}}
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

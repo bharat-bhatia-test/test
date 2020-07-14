@@ -1,0 +1,212 @@
+<nb-card>
+    <nb-card-body>
+        <form [formGroup]="personalInfoForm" (ngSubmit)="addPersonalInfo()">
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <p>Registered No.: {{caregiverRegistrationNumber}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="demo-items">
+                                <label for="salute">Salute</label>
+                                <nb-radio-group name="salute" id="salute" formControlName="salute">
+                                    <nb-radio value="1" name="salute">
+                                        Mr
+                                    </nb-radio>
+                                    <nb-radio value="2" name="salute">
+                                        Ms
+                                    </nb-radio>
+                                </nb-radio-group>
+                                <ngx-control-messages fieldName="Salute"
+                                    [control]="personalInfoForm.controls['salute']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="chinese_name" class="ml-3 mr-3">Chinese Name(Same as HKID Card)</label>
+                            <input type="text" id="chinese_name" class="ml-3 mr-3" formControlName="chinese_name"
+                                nbInput fullWidth placeholder="Chinese Name">
+                            <ngx-control-messages fieldName="Chinese Name"
+                                [control]="personalInfoForm.controls['chinese_name']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="english_name" class="ml-3 mr-3">English Name (Same as HKID Card)</label>
+                            <input type="text" class="ml-3 mr-3" id="english_name" formControlName="english_name"
+                                nbInput fullWidth placeholder="English Name">
+                            <ngx-control-messages fieldName="English Name"
+                                [control]="personalInfoForm.controls['english_name']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="nick_name" class="ml-3 mr-3">Nickname</label>
+                            <input type="text" id="nick_name" class="ml-3 mr-3" formControlName="nick_name" nbInput
+                                fullWidth placeholder="Nickname">
+                            <ngx-control-messages fieldName="Nickname"
+                                [control]="personalInfoForm.controls['nick_name']" class="ml-3">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="email" class="ml-3 mr-3">Email Address</label>
+                            <input type="text" disabled class="ml-3 mr-3" id="email" formControlName="email" nbInput
+                                fullWidth placeholder="Email Address">
+                            <ngx-control-messages fieldName="Email Address"
+                                [control]="personalInfoForm.controls['email']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="hkid_card_no" class="ml-3 mr-3">HKID Card No.</label>
+                            <input type="text" maxlength="8" id="hkid_card_no" class="ml-3 mr-3"
+                                formControlName="hkid_card_no" nbInput fullWidth placeholder="HKID Card No">
+                            <ngx-control-messages fieldName="HKID Card No"
+                                [control]="personalInfoForm.controls['hkid_card_no']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="dob" class="ml-3 mr-3">Date of Birth</label>
+                            <input nbInput class="ml-3 mr-3" formControlName="dob" fullWidth placeholder="Date of Birth"
+                                [nbDatepicker]="formpicker">
+                            <nb-datepicker #formpicker [max]="max"></nb-datepicker>
+                            <ngx-control-messages fieldName="Date of Birth" [control]="personalInfoForm.controls['dob']"
+                                class="ml-3">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Language</label>
+                    <div class="checkbox-main">
+                        <div class="single-check"
+                            *ngFor="let language of personalInfoForm.get('language')['controls'];let i = index"
+                            [formGroup]="language">
+                            <nb-checkbox [formControl]="language.get('selected')" (change)="showOthers()">
+                                {{ language.get('name').value }}
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" *ngIf="showOtherLanguageOption">
+                    <label for="otherLanguageName">Please specify other language</label>
+                    <input type="text" id="otherLanguageName" formControlName="otherLanguageName" nbInput fullWidth
+                        placeholder="Other language">
+                    <ngx-control-messages fieldName="Other language"
+                        [control]="personalInfoForm.controls['otherLanguageName']">
+                    </ngx-control-messages>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="caregiver_type" class="ml-3 mr-3">Caregiver
+                                Type</label>
+                            <nb-select selected="{{personalInfoForm.value.caregiver_type}}"
+                                formControlName="caregiver_type" class="ml-3 mr-3" fullWidth
+                                placeholder="Caregiver Type">
+                                <nb-option *ngFor="let type of caregiverType" [value]="type.id">{{type.name}}
+                                </nb-option>
+                            </nb-select>
+                        </div>
+                        <ngx-control-messages fieldName="Caregiver Type"
+                            [control]="personalInfoForm.controls['caregiver_type']">
+                        </ngx-control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="mobile_number" class="ml-3 mr-3">Mobile and WhatsApp Number</label>
+                            <input type="text" id="mobile_number" class="ml-3 mr-3" formControlName="mobile_number"
+                                nbInput fullWidth placeholder="Mobile Number">
+                            <ngx-control-messages fieldName="Mobile Number"
+                                [control]="personalInfoForm.controls['mobile_number']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="full-name-inputs">
+                        <div class="row mb-3">
+                            <label for="refferers_email" class="ml-3 mr-3">Referrer's Email Address (Optional)</label>
+                            <input type="text" [disableControl]="enableReferral" class="ml-3 mr-3" id="refferers_email"
+                                formControlName="refferers_email" nbInput fullWidth
+                                placeholder="Referrer Email Address">
+                            <ngx-control-messages fieldName="refferers_email Address"
+                                [control]="personalInfoForm.controls['refferers_email']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="demo-items">
+                                <label for="preferred_communication_language">Preferred Language of
+                                    Communication</label>
+                                <nb-radio-group name="preferred_communication_language"
+                                    id="preferred_communication_language"
+                                    formControlName="preferred_communication_language">
+                                    <nb-radio [value]="valueChinese" name="preferred_communication_language">
+                                        Chinese
+                                    </nb-radio>
+                                    <nb-radio [value]="valueEnglish" name="preferred_communication_language">
+                                        English
+                                    </nb-radio>
+                                </nb-radio-group>
+                                <ngx-control-messages fieldName="Preferred Language of Communication"
+                                    [control]="personalInfoForm.controls['preferred_communication_language']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" nbButton>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+</nb-card>

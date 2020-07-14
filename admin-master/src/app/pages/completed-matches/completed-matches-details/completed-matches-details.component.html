@@ -1,0 +1,260 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="inline-form-card">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-md-6">
+                        Completed Matches Booking Details
+                    </div>
+                    <div class="col-md-6 pull-right">
+                        <button type="button" class="btn btn-primary mr-3" *ngIf="showPayCaregiver"
+                            (click)="openPopup(dialog)">Pay
+                            Caregiver</button>
+                        <button type="button" class="btn btn-primary mr-3" *ngIf="showDelete"
+                            (click)="cancelAppointment()">Delete</button>
+                        <!-- <button type="button" class="btn btn-primary mr-3" *ngIf="showRefund"
+                            (click)="openPopup(dialogRefund)">Refund</button> -->
+                        <!-- <button type="button" class="btn btn-primary mr-3" *ngIf="showRefund"
+                            (click)="refundAppointment()">Refund</button> -->
+                    </div>
+                </div>
+            </nb-card-header>
+            <div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Receipt Number: {{bookingDetails?.receipt_number !== null ?bookingDetails?.receipt_number:""  }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Date of Appointment
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6">
+                                Start Time : {{bookingDetails?.start_time | date :'medium'}}
+                                <a href="javascript:void(0)" *ngIf="showEditDateOption" (click)="openPopup(bookingDate)"
+                                    title="Change Booking Date Time" class="btn-icons"><i
+                                        class="fas fa-pencil-alt"></i></a>
+                            </div>
+                            <div class="col-md-6">
+                                Account User : <a href="javascript:void(0)" target="_blank"
+                                    routerLink="/pages/client/client-view-details/{{bookingDetails?.client?.user_id}}/account-user-personal-info">{{bookingDetails?.client?.first_name }}
+                                    {{bookingDetails?.client?.last_name }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        End Time : {{bookingDetails?.end_time | date:'medium'}}
+                    </div>
+                    <div class="col-md-6">
+                        Care Receiver : <a href="javascript:void(0)" target="_blank"
+                            routerLink="/pages/client/client-view-details/{{bookingDetails?.client?.user_id}}/care-receiver-personal-info">{{bookingDetails?.client?.service_user_firstname }}
+                            {{bookingDetails?.client?.service_user_lastname }}</a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        Duration : {{bookingDetails?.duration}} Hour(s)
+                    </div>
+                    <div class="col-md-6">
+                        Services required :
+                        <ul *ngIf="bookingDetails?.services?.length > 0">
+                            <li *ngFor="let service of bookingDetails.services">
+                                <span>{{service.english_title}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12"
+                        *ngIf="bookingDetails?.payment_date_client && bookingDetails?.payment_date_client !== null">
+                        Client Payment Details : {{bookingDetails?.payment_date_client | date:'medium'}}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Accepted Caregiver : <a href="javascript:void(0);" target="_blank"
+                            routerLink="/pages/caregiver/onboard/personal-info/{{bookingDetails?.acceptedCaregvier?.caregiver?.registration_no}}">{{bookingDetails?.acceptedCaregvier?.caregiver.english_name}}</a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Accepted Caregiver Charge Per Hour :
+                        ${{bookingDetails?.acceptedCaregvier?.caregiver_charges_price}}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Caregiver Service fee : $ {{ bookingDetails?.acceptedCaregvier?.caregiver_service_fee }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Client Service fee : $ {{ bookingDetails?.acceptedCaregvier?.client_service_fee }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Transport Subsidy :
+                        $ {{bookingDetails?.transport_subsidy !== null ? bookingDetails?.transport_subsidy : 0 }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        Total : $
+                        {{ bookingDetails?.acceptedCaregvier?.total_amount }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #dialog let-data let-ref="dialogRef">
+        <nb-card>
+            <nb-card-header>Caregiver Payment</nb-card-header>
+            <nb-card-body>
+                <form [formGroup]="payCaregiverForm" (ngSubmit)="clientPayment()">
+                    <div class="row mb-3">
+                        <div class="col-md-12 calendar-form">
+                            <label>Select Caregiver Payment Date</label>
+                            <div class="calendar-input">
+                                <input class="form-control" placeholder="Client Payment Date"
+                                    formControlName="payment_date_client" ngbDatepicker #d="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </button>
+                                    <ngx-control-messages fieldName="Caregiver Payment Date"
+                                        [control]="payCaregiverForm.controls['payment_date_client']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                            <ngb-timepicker name="dp" formControlName="payment_date_time" [spinners]="showSpinners"
+                                [seconds]="false"></ngb-timepicker>
+                            <ngx-control-messages fieldName="Caregiver Payment Time"
+                                [control]="payCaregiverForm.controls['payment_date_time']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <button nbButton #closeButton (click)="ref.close()" id="closeButton">Close</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" nbButton>Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </nb-card-body>
+        </nb-card>
+    </ng-template>
+
+    <ng-template #bookingDate let-data let-ref="dialogRef">
+        <nb-card>
+            <nb-card-header>Change Booking Date Time</nb-card-header>
+            <nb-card-body>
+                <form [formGroup]="changeBookingDateForm" (ngSubmit)="changeBookingTime()">
+                    <div class="row mb-3">
+                        <div class="col-md-12 calendar-form">
+                            <label>Select New Booking Date Time</label>
+                            <div class="calendar-input form-group">
+                                <input class="form-control" placeholder="Date" formControlName="date" ngbDatepicker
+                                    #d="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </button>
+                                    <ngx-control-messages fieldName="Date"
+                                        [control]="changeBookingDateForm.controls['date']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                            <!-- <ngb-timepicker name="dp" formControlName="start_time" [spinners]="showSpinners"
+                            [seconds]="false"></ngb-timepicker> -->
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Start Time" formControlName="start_time">
+                                <ngx-control-messages fieldName="Start Time"
+                                    [control]="changeBookingDateForm.controls['start_time']">
+                                </ngx-control-messages>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" formControlName="start_minutes"
+                                    placeholder="Select Minutes">
+                                    <option value="" selected>Please select</option>
+                                    <option value="00">00</option>
+                                    <option value="30">30</option>
+                                </select>
+                                <ngx-control-messages fieldName="Start Minute"
+                                    [control]="changeBookingDateForm.controls['start_minutes']">
+                                </ngx-control-messages>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" formControlName="start_meridian"
+                                    placeholder="Select Meridian">
+                                    <option value="" selected>Please select</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                                <ngx-control-messages fieldName="Start Meridian"
+                                    [control]="changeBookingDateForm.controls['start_meridian']">
+                                </ngx-control-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <button nbButton #closeButtonNew (click)="ref.close()" id="closeButtonNew">Close</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" nbButton>Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </nb-card-body>
+        </nb-card>
+    </ng-template>
+
+    <ng-template #dialogRefund let-data let-ref="dialogRef">
+        <nb-card>
+            <nb-card-header>Refund Payment</nb-card-header>
+            <nb-card-body>
+                <form [formGroup]="refundPaymentForm" (ngSubmit)="refundAppointment()">
+                    <div class="row mb-3">
+                        <div class="col-md-12 calendar-form">
+                            <label>Select Refund Payment Date</label>
+                            <div class="calendar-input">
+                                <input class="form-control" placeholder="Refund Payment Date"
+                                    formControlName="refund_date_client" ngbDatepicker #d="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </button>
+                                    <ngx-control-messages fieldName="Refund Payment Date"
+                                        [control]="refundPaymentForm.controls['refund_date_client']">
+                                    </ngx-control-messages>
+                                </div>
+                            </div>
+                            <ngb-timepicker name="dp" formControlName="refund_date_time" [spinners]="showSpinners"
+                                [seconds]="false"></ngb-timepicker>
+                            <ngx-control-messages fieldName="Refund Payment Time"
+                                [control]="refundPaymentForm.controls['refund_date_time']">
+                            </ngx-control-messages>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <button nbButton #closeButtonRefund (click)="ref.close()"
+                                id="closeButtonRefund">Close</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" nbButton>Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </nb-card-body>
+        </nb-card>
+    </ng-template>

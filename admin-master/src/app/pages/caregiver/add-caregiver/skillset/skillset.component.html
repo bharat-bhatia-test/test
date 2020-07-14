@@ -1,0 +1,87 @@
+<nb-card>
+    <nb-card-body>
+        <form [formGroup]="skillSetForm" (ngSubmit)="addSkillSet()">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="demo-items">
+                        <label for="self_introduction">Self Introduction (Optional)</label>
+                        <textarea rows="5" formControlName="self_introduction" nbInput fullWidth shape="round"
+                            placeholder="Clients can see your self intro on the platform."></textarea>
+                        <small class="pull-right">(Fewer than 50 words. Please don’t compare yourself with or criticise
+                            others)</small>
+                        <ngx-control-messages fieldName="self_introduction"
+                            [control]="skillSetForm.controls['self_introduction']">
+                        </ngx-control-messages>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <hr />
+                    <h4>Your Skills</h4>
+                    <p>Please only tick what you know. Clients would give you a poor rating if you claim you know how to
+                        do something but don't!</p>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div *ngIf="personalCareArray.length > 0">
+                        <label class="label-title">Personal Care</label>
+                        <ul>
+                            <li *ngFor="
+                                let personalCare of skillSetForm.get(
+                                  'personal_care'
+                                )['controls'];
+                                let i = index
+                              " [formGroup]="personalCare">
+                                <div class="custom-checkbox">
+
+                                    <input id="personalCare_{{ i }}" type="checkbox"
+                                        [formControl]="personalCare.get('selected')" class="form-check-input" />
+                                    <label for="personalCare_{{ i }}">
+                                        {{ personalCare.get('name').value  }}
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div *ngIf="personalCareArray.length == 0">
+                        <p>No Skills found</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div *ngIf="personalCareArray.length > 0">
+                        <label class="label-title">Special Care</label>
+                        <ul>
+                            <li *ngFor="
+                                let specialCare of skillSetForm.get('special_care')[
+                                  'controls'
+                                ];
+                                let j = index
+                              " [formGroup]="specialCare">
+                                <div class="custom-checkbox">
+                                    <input id="specialCare_{{ j }}" type="checkbox"
+                                        [formControl]="specialCare.get('selected')" class="form-check-input" />
+                                    <label for="specialCare_{{ j }}">
+                                        {{ specialCare.get('name').value }}
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div *ngIf="personalCareArray.length == 0">
+                        <p>No Skills found</p>
+                    </div>
+                </div>
+            </div>
+            <span class="float-right" *ngIf="showMessage">*Must be carried out by nurses</span>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" nbButton>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    </nb-card-body>
+</nb-card>
