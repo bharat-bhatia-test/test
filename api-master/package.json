@@ -30,7 +30,7 @@
     "got": "^10.7.0",
     "http-status-codes": "^1.4.0",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.8",
+    "lint-staged": "^10.2.11",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
