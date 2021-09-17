@@ -29,7 +29,7 @@
     "eslint-plugin-json": "^2.1.0",
     "got": "^10.7.0",
     "http-status-codes": "^1.4.0",
-    "husky": "^4.2.3",
+    "husky": "^4.3.7",
     "lint-staged": "^10.0.8",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
